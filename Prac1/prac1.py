@@ -18,14 +18,19 @@ count = 0;
 countUp = True;
 
 def main():
+	#initialise pins
 	count = 0;
 	outputList = [11,13,15]
 	inputList = [29,31]
 	GPIO.setmode(GPIO.BOARD)
 	GPIO.setup(outputList, GPIO.OUT)
 	GPIO.setup(inputList, GPIO.IN, pull_up_down=GPIO.PUD_UP)
+	#add interupts for the inputs
 	GPIO.add_event_detect(29, GPIO.RISING, callback=my_callback_29, bouncetime=200)
 	GPIO.add_event_detect(31, GPIO.RISING, callback=my_callback_31, bouncetime=200)
+	
+	#code to count once every second
+	#also loops back if it goes out of bounds
 	while True:
 		display(count)
 		time.sleep(1)
@@ -38,11 +43,13 @@ def main():
 			if count<0:
 				count = 7
 
+#interupts for inputs
 def my_callback_29(channel):
 	countUp=True
 def my_callback_31(channel):
 	countUp=False
 
+#function that creates the output on the LEDs
 def display(count):
 	for i in range(3):
 		GPIO.output(11+2*i, count%2)
